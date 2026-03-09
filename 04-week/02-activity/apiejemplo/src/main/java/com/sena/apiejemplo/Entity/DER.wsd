@@ -1,0 +1,123 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+package Seguridad {
+
+    class Persona {
+        id : int
+        primerNombre : String
+        apellidos : String
+        direccion : String
+        telefono : String
+        correo : String
+        estado : String
+        createdAt : Date
+        updatedAt : Date
+    }
+
+    class Usuario {
+        id : int
+        id_persona : int
+        nombre : String
+        correo : String
+        contrasena : String
+    }
+
+    class Rol {
+        id : int
+        nombre : String
+        descripcion : String
+    }
+
+    class Modulo {
+        id : int
+        nombre : String
+        descripcion : String
+        icono : String
+        orden : int
+    }
+
+    class Vista {
+        id : int
+        nombre : String
+        descripcion : String
+    }
+
+    class Accion {
+        id : int
+        id_usuario : int
+        accion : String
+        tablaAfectada : String
+        fecha : Date
+        descripcion : String
+    }
+
+}
+
+package Negocio {
+    class Sesion {
+        id : int
+        id_usuario : int
+        fechaInicio : Date
+        fechaExpiracion : Date
+        estado : String
+    }
+
+    class Producto {
+        id : int
+        nombre : String
+        stock : int
+        precio : double
+        imagen : String
+        descripcion : String
+    }
+
+    class Carrito {
+        id : int
+        id_usuario : int
+        id_producto : int
+        cantidad : int
+    }
+
+    class Orden {
+        id : int
+        id_MetodoPago : int
+        id_usuario : int
+        iva : double
+        subtotal : double
+        total : double
+    }
+
+    class OrdenDetalle {
+        id : int
+        id_orden : int
+        id_producto : int
+        cantidad : int
+        precio : double
+    }
+
+    class MetodoPago {
+        id : int
+        nombre : String
+    }
+
+}
+
+' RELACIONES SEGURIDAD
+Usuario "0..*" -- "0..*" Rol : roles
+Rol "0..*" -- "0..*" Modulo : acceso
+Modulo "1" *-- "0..*" Vista : contiene
+Rol "0..*" -- "0..*" Vista : permisos
+Usuario "1" *-- "0..*" Accion : registra
+
+' RELACIONES NEGOCIO
+Persona "1" *-- "0..1" Usuario : datos
+Usuario "1" *-- "0..*" Sesion : sesiones
+Usuario "1" o-- "0..*" Carrito : carrito
+Carrito "0..*" -- "1" Producto : productos
+Usuario "1" o-- "0..*" Orden : ordenes
+Orden "1" *-- "1..*" OrdenDetalle : detalles
+OrdenDetalle "0..*" -- "1" Producto : producto
+Orden "0..*" -- "1" MetodoPago : pago
+
+@enduml
